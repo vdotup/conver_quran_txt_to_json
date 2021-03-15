@@ -32,7 +32,8 @@ def read(name):
 def write(array, name):
     print('writing')
     with open(name, "w", encoding="utf8") as f:
-        f.write("[\n")
+        output = ""
+        output += "[\n"
         surahId = -1
         surahName = ""
         verseId = 0
@@ -44,34 +45,42 @@ def write(array, name):
                 verseId = 0
                 if surahId != 0:
                     # close previous verses array
-                    f.write("\t\t]")
-                    f.write("\n\t},\n")
+                    output += "\t\t]"
+                    output += "\n\t},\n"
 
-                f.write("\t{\n")
-                f.write("\t\t" + "\"id\": " + str(surahId) + ",")
-                f.write("\n\t\t" + "\"name\": " +
-                        "\"" + surahName.strip() + "\",")
+                output += "\t{\n"
+                output += "\t\t" + "\"id\": " + str(surahId) + ","
+                output += "\n\t\t" + \
+                    "\"name\": {\n\t\t\t\"ar\": " + "\"" + \
+                    surahName.strip() + "\"\n\t\t},"
                 # open verses array
-                f.write("\n\t\t\"verses\": [\n")
+                output += "\n\t\t\"verses\": [\n"
 
-            f.write("\t\t\t{\n")
-            f.write("\t\t\t\t" + "\"id\": " + str(verseId) + ",")
+            output += "\t\t\t{\n"
+            output += "\t\t\t\t" + "\"id\": " + str(verseId) + ","
             if verseId == 0 and surahId == 0:
                 # add basmalah as first verse to fatihah only
-                f.write("\n\t\t\t\t" + "\"verse\": " +
-                        "\"" + "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ" + "\"")
+                output += "\n\t\t\t\t" + \
+                    "\"verse\": {\n\t\t\t\t\t\"ar\": " + "\"" + \
+                    "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ" + "\"\n\t\t\t\t}"
             elif verseId == 0:
                 verse = array[i].strip().split("#")
-                f.write("\n\t\t\t\t" + "\"verse\": " +
-                        "\"" + verse[1].strip() + "\"")
+                output += "\n\t\t\t\t" + \
+                    "\"verse\": {\n\t\t\t\t\t\"ar\": " + "\"" + \
+                    verse[1].strip() + "\"\n\t\t\t\t}"
             else:
-                f.write("\n\t\t\t\t" + "\"verse\": " +
-                        "\"" + array[i].strip() + "\"")
-            f.write("\n\t\t\t},\n")
+                output += "\n\t\t\t\t" + \
+                    "\"verse\": {\n\t\t\t\t\t\"ar\": " + "\"" + \
+                    array[i].strip() + "\"\n\t\t\t\t}"
+
+            output += "\n\t\t\t},\n"
             verseId += 1
-        f.write("\t\t],\n")
-        f.write("\t},\n")
-        f.write("]")
+        output += "\t\t],\n"
+        output += "\t},\n"
+        output += "]"
+        output = output.replace("},\n\t\t]", "}\n\t\t]")
+        output = output.replace("],\n\t},", "]\n\t}")
+        f.write(output)
 
 
 def clean(text):

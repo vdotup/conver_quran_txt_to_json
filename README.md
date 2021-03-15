@@ -2,12 +2,12 @@
 
 full quran text and UthmanicHafs.ttf font source: qurancomplex.gov.sa
 
-goal of this python project is to convert fullQuran.txt to json array of object "surah"
+goal of this python project is to convert fullQuran.txt to json array of object "surah" that contains surah information and array of verse objects.
 
 - surah name and verses are object of language codes to allow for easy translation in future.
 - basmalah should be first verse for Fatihah only.
 
-Example
+Goal Example
 ```json
 [
   {

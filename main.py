@@ -34,23 +34,39 @@ def write(array, name):
     with open(name, "w", encoding="utf8") as f:
         f.write("[\n")
         surahId = -1
+        surahName = ""
         verseId = 0
         for i in range(len(array)):
-            if "سُورَةُ" in array[i]:
+            if "#" in array[i]:
+                verse = array[i].strip()
+                surahName = verse.split("#")[0]
                 surahId += 1
                 verseId = 0
                 if surahId != 0:
                     # close previous verses array
-                    f.write("\t\t]\n")
-                    f.write("\t},\n")
-                # open verses array
+                    f.write("\t\t]")
+                    f.write("\n\t},\n")
+
                 f.write("\t{\n")
                 f.write("\t\t" + "\"id\": " + str(surahId) + ",")
+                f.write("\n\t\t" + "\"name\": " +
+                        "\"" + surahName.strip() + "\",")
+                # open verses array
                 f.write("\n\t\t\"verses\": [\n")
+
             f.write("\t\t\t{\n")
             f.write("\t\t\t\t" + "\"id\": " + str(verseId) + ",")
-            f.write("\n\t\t\t\t" + "\"verse\": " +
-                    "\"" + array[i].strip() + "\"")
+            if verseId == 0 and surahId == 0:
+                # add basmalah as first verse to fatihah only
+                f.write("\n\t\t\t\t" + "\"verse\": " +
+                        "\"" + "بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ" + "\"")
+            elif verseId == 0:
+                verse = array[i].strip().split("#")
+                f.write("\n\t\t\t\t" + "\"verse\": " +
+                        "\"" + verse[1].strip() + "\"")
+            else:
+                f.write("\n\t\t\t\t" + "\"verse\": " +
+                        "\"" + array[i].strip() + "\"")
             f.write("\n\t\t\t},\n")
             verseId += 1
         f.write("\t\t],\n")
@@ -62,7 +78,13 @@ def clean(text):
     cleaned = text.replace("\n", " ")
     cleaned = cleaned.replace("\t", " ")
     cleaned = cleaned.replace("  ", " ")
+    cleaned = cleaned.replace("بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ", "#")
     cleaned = en_to_ar_num(cleaned)
+
+    # save for debug
+    with open("debug.txt", "w", encoding="utf8") as f:
+        f.write(cleaned)
+    #
     verses = [x for x in range(300)]
     verses = reversed(verses)
     for verse in verses:

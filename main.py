@@ -87,7 +87,15 @@ def clean(text):
     cleaned = text.replace("\n", " ")
     cleaned = cleaned.replace("\t", " ")
     cleaned = cleaned.replace("  ", " ")
+    cleaned = cleaned.replace("إِنَّهُۥ مِن سُلَيۡمَٰنَ وَإِنَّهُۥ بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ",
+                              "%")
     cleaned = cleaned.replace("بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ", "#")
+    cleaned = cleaned.replace("بِّسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ", "#")
+
+    cleaned = cleaned.replace("%",
+                              "إِنَّهُۥ مِن سُلَيۡمَٰنَ وَإِنَّهُۥ بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ")
+    cleaned = cleaned.replace("سُورَةُ التَّوۡبَةِ بَرَآءَةٞ مِّنَ ٱللَّهِ وَرَسُولِهِۦٓ إِلَى ٱلَّذِينَ عَٰهَدتُّم مِّنَ ٱلۡمُشۡرِكِينَ",
+                              "سُورَةُ التَّوۡبَةِ#بَرَآءَةٞ مِّنَ ٱللَّهِ وَرَسُولِهِۦٓ إِلَى ٱلَّذِينَ عَٰهَدتُّم مِّنَ ٱلۡمُشۡرِكِينَ")
     cleaned = en_to_ar_num(cleaned)
 
     # save for debug
@@ -105,4 +113,8 @@ def clean(text):
 fullText = read("fullQuran.txt")
 fullText = clean(fullText)
 separated = re.split(";", fullText)
+print("[" + separated[len(separated)-1] + "]")
+for item in separated:
+    if item == " ":
+        separated.remove(item)
 write(separated, 'output/result.json')
